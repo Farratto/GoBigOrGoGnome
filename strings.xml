@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Please see the LICENSE.txt file included with this distribution for
+	attribution and copyright information.
+-->
+<root>
+	<!-- Options -->
+	<string name="option_header_size_matters">Size Matters (GM)</string>
+	<string name="option_label_sm_small_size">Make small creature tokens slightly smaller than medium. (aesthetic change only)</string>
+</root>

@@ -1,7 +1,7 @@
---
 -- Please see the license.txt file included with this distribution for
 -- attribution and copyright information.
---
+
+--luacheck: globals updateSizeHelper getTokenSpace onSpaceChanged onReachChanged onTokenRefUpdated
 
 local updateSizeHelperOriginal;
 local getTokenSpaceOriginal;
@@ -16,6 +16,7 @@ function onInit()
 	if Session.IsHost then
 		SizeManager.addSpaceChangedHandler(onSpaceChanged);
 		SizeManager.addReachChangedHandler(onReachChanged);
+		DB.addHandler('combattracker.list.*.tokenrefid', 'onUpdate', onTokenRefUpdated);
 	end
 end
 
@@ -47,4 +48,12 @@ function onReachChanged(nodeCombatant)
 	if tokenCombatant then
 		TokenManager.updateSizeHelper(tokenCombatant, nodeCombatant);
 	end
+end
+
+function onTokenRefUpdated(nodeUpdated)
+	local nodeCT = DB.getParent(nodeUpdated);
+	if not nodeCT then return end
+	local tokenCT = CombatManager.getTokenFromCT(nodeCT);
+	if not tokenCT then return end
+	SizeManager.onCombatantEffectUpdated(DB.getChild(nodeCT, 'effects'), true);
 end

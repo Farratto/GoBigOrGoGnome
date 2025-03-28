@@ -1,7 +1,7 @@
---
 -- Please see the license.txt file included with this distribution for
 -- attribution and copyright information.
---
+
+--luacheck: globals getCreatureSizeDnD3 getCreatureSizeDnD5 getSpaceReach
 
 local getCreatureSizeDnD3Original;
 local getCreatureSizeDnD5Original;

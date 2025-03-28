@@ -1,7 +1,13 @@
---
 -- Please see the license.txt file included with this distribution for
 -- attribution and copyright information.
---
+
+--luacheck: globals getDBValue addSizeChangedHandler removeSizeChangedHandler invokeSizeChangedHandlers
+--luacheck: globals addSpaceChangedHandler removeSpaceChangedHandler invokeSpaceChangedHandlers
+--luacheck: globals addReachChangedHandler removeReachChangedHandler invokeReachChangedHandlers
+--luacheck: globals getDefaultSize getSizeTable onCurrentSizeChanged onCurrentSpaceChanged
+--luacheck: globals onCurrentReachChanged onCurrentDeleted onChildDeleted onCombatantEffectUpdated
+--luacheck: globals calculateSize calculateSpace calculateReach getSizeName getSpaceFromSize
+--luacheck: globals swapSpaceReach resetSpaceReach swapSize resetSize incrementSize forceRedraw
 
 local getValueOriginal;
 
@@ -25,6 +31,9 @@ function onInit()
 		DB.addHandler(CombatManager.CT_COMBATANT_PATH .. ".currentreach", "onDelete", onCurrentDeleted);
 		DB.addHandler(CombatManager.CT_COMBATANT_PATH, "onChildDeleted", onChildDeleted);
 		DB.addHandler(CombatManager.CT_COMBATANT_PATH .. ".effects", "onChildUpdate", onCombatantEffectUpdated);
+		OptionsManager.registerOptionData({ sKey = 'sm_small_size', sGroupRes = 'option_header_size_matters'
+			, tCustom = { default = "on" }
+		});
 	end
 end
 
@@ -138,9 +147,10 @@ function onChildDeleted(nodeCombatant)
 	sDeleted =nil;
 end
 
-function onCombatantEffectUpdated(nodeEffectList)
+function onCombatantEffectUpdated(nodeEffectList, bForceRedraw)
+	if not nodeEffectList then return end
 	local nodeCombatant = nodeEffectList.getParent();
-	calculateSpace(nodeCombatant);
+	calculateSpace(nodeCombatant, bForceRedraw);
 	calculateReach(nodeCombatant);
 end
 
@@ -158,6 +168,7 @@ function calculateSize(nodeCombatant)
 	local aSizeEffects = EffectManager.getEffectsByType(nodeCombatant, "SIZE");
 	local nMod = 0;
 	local sBaseSize = DB.getValue(nodeCombatant, "size", ""):lower();
+	sBaseSize = string.gsub(sBaseSize, '%s+.*$', ''); --removes everything after the first space
 	local sCurrentSize = DB.getValue(nodeCombatant, "currentsize", sBaseSize):lower();
 	local sSize = sBaseSize;
 	for _,rEffect in ipairs(aSizeEffects) do
@@ -191,7 +202,7 @@ function calculateSize(nodeCombatant)
 	return nSize;
 end
 
-function calculateSpace(nodeCombatant)
+function calculateSpace(nodeCombatant, bForceRedraw)
 	local nDU = GameSystem.getDistanceUnitsPerGrid();
 	local nBaseSpace = DB.getValue(nodeCombatant, "space", nDU);
 	local nCurrentSpace = DB.getValue(nodeCombatant, "currentspace", nBaseSpace);
@@ -200,6 +211,7 @@ function calculateSpace(nodeCombatant)
 	local nSize = calculateSize(nodeCombatant);
 	if nSize then
 		local nSizeSpace = getSpaceFromSize(nSize, nDU);
+		--local nSizeSpace = ActorCommonManager.getSpaceReachFromActorSize(nSize, Session.RulesetName);
 		if nSizeSpace then
 			nSpace = nSizeSpace;
 		end
@@ -217,11 +229,16 @@ function calculateSpace(nodeCombatant)
 		nSpace = nSpace + rEffect.mod;
 	end
 
-	if nSpace ~= nCurrentSpace then
+	if bForceRedraw or (nSpace ~= nCurrentSpace) then
 		if nSpace == nBaseSpace then
 			DB.deleteChild(nodeCombatant, "currentspace");
 		else
+			if bForceRedraw then DB.deleteChild(nodeCombatant, "currentspace") end
 			DB.setValue(nodeCombatant, "currentspace", "number", nSpace);
+		end
+		if nSpace == 3.75 then
+			local tokenCT = CombatManager.getTokenFromCT(nodeCombatant);
+			tokenCT.setScale(0.6);
 		end
 		return true;
 	end
@@ -265,10 +282,35 @@ end
 
 function getSpaceFromSize(nSize, nDU)
 	-- Scale by increments over default.
+--[[
 	local nDefaultSize = getDefaultSize();
 	if nDefaultSize then
-		return nDU * math.max(1, nSize + 1 - nDefaultSize);
+		--return nDU * math.max(1, nSize + 1 - nDefaultSize);
+		local nReturn = nSize + 1 - nDefaultSize;
+		if nReturn < 0.5 then
+			if Session.RulesetName == '5E' then
+				if nReturn == 0 then
+					nReturn = 1;
+				elseif nReturn == -1 then
+					nReturn = 0.5;
+				else
+					nReturn = 1;
+				end
+			else
+				nReturn = 1;
+			end
+		end
+		return nReturn * nDU;
 	end
+]]
+	--not RAW but seems cool.  I'll make an option if anyone complains.
+	--if Session.RulesetName == '5E' and OptionsManager.isOption('sm_small_size', 'on') and nSize == -1 then
+	if Session.RulesetName == '5E' and OptionsManager.isOption('sm_small_size', 'on') and nSize == -1 then
+		if not nDU then nDU = GameSystem.getDistanceUnitsPerGrid() end
+		return nDU * 0.75;
+	end
+
+	return ActorCommonManager.getSpaceReachFromActorSize(nSize, Session.RulesetName);
 end
 
 function swapSpaceReach()
@@ -285,4 +327,39 @@ end
 
 function resetSize()
 	bShouldSwap = false;
+end
+
+function incrementSize(sCurrent, nIncrement)
+	local sCurrentSans = string.lower(string.gsub(sCurrent, '%s+.*$', ''));
+	local sCurrentRemainder = string.match(sCurrent, '%(.+%)$');
+	local tSize = getSizeTable();
+	local nSize = tSize[sCurrentSans];
+	if not nSize then return false end
+	local nSizeNew = nSize + nIncrement;
+
+	local sSizeNew;
+	for sSizePredef,nSizeCat in pairs(tSize) do
+		if #sSizePredef > 1 and nSizeCat == nSizeNew then
+			sSizeNew = StringManager.capitalize(sSizePredef);
+			break;
+		end
+	end
+	if sSizeNew then
+		if sCurrentRemainder then sSizeNew = sSizeNew.." "..sCurrentRemainder end
+		--setValue(sSizeNew);
+		return sSizeNew;
+	else
+		return false;
+	end
+end
+
+function forceRedraw(nodeW)
+	local nodePath = DB.getPath(nodeW);
+	local bOnCT = string.match(nodePath, 'combattracker');
+	if bOnCT then
+		SizeManager.onCombatantEffectUpdated(DB.getChild(nodeW, 'effects'), true);
+	elseif ActorManager.isPC(nodeW) then
+		local nodeCT = ActorManager.getCTNode(nodeW);
+		if nodeCT then SizeManager.onCombatantEffectUpdated(DB.getChild(nodeCT, 'effects'), true) end
+	end
 end

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+  Please see the LICENSE.txt file included with this distribution for
+  attribution and copyright information.
+-->
+<root>
+	<windowclass name="npc_combat_summary_fields" merge="join">
+		<sheetdata>
+			<string_content_columnh name="size">
+				<script>
+					function onWheel(notches)
+						if not Input.isControlPressed() or isReadOnly() then return false end
+
+						local sCurrent = getValue();
+						local sSizeNew = SizeManager.incrementSize(sCurrent, notches);
+						if sSizeNew then
+							if sSizeNew ~= sCurrent then
+								setValue(sSizeNew);
+								SizeManager.forceRedraw(window.getDatabaseNode());
+							end
+							return true;
+						else
+							return sSizeNew;
+						end
+					end
+				</script>
+			</string_content_columnh>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="charsheet_notes_details" merge="join">
+		<sheetdata>
+			<stringu name="size">
+				<script>
+					function onWheel(notches)
+						if not Input.isControlPressed() or isReadOnly() then return false end
+
+						local sCurrent = getValue();
+						local sSizeNew = SizeManager.incrementSize(sCurrent, notches);
+						if sSizeNew then
+							if sSizeNew ~= sCurrent then
+								setValue(sSizeNew);
+								SizeManager.forceRedraw(window.getDatabaseNode());
+							end
+							return true;
+						else
+							return sSizeNew;
+						end
+					end
+				</script>
+			</stringu>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="vehicle_combat_standard" merge="join">
+		<sheetdata>
+			<string_content_columnh name="size">
+				<script>
+					function onWheel(notches)
+						if not Input.isControlPressed() or isReadOnly() then return false end
+
+						local sCurrent = getValue();
+						local sSizeNew = SizeManager.incrementSize(sCurrent, notches);
+						if sSizeNew then
+							if sSizeNew ~= sCurrent then
+								setValue(sSizeNew);
+								SizeManager.forceRedraw(window.getDatabaseNode());
+							end
+							return true;
+						else
+							return sSizeNew;
+						end
+					end
+				</script>
+			</string_content_columnh>
+		</sheetdata>
+	</windowclass>
+</root>
