@@ -34,5 +34,6 @@ SmiteWorks owns rights to code sections copied from their rulesets by permission
 
 ### Change Log
 
+* v1.2.2: FIXED: typo
 * v1.2.1: FIX: nil error. Now allows setting reach to none
 * v1.2.0: REBRANDING of Size Matters. FEATURE: hold ctrl and mouse-wheel up/down to rapidly change size-category of creatures. FIXED: not setting token size correctly for creatures smaller than 1 grid square. FIXED: when adding new token to map that has a size change, that size change was not respected. NEW option to make small creture tokens slightly smaller than medium (aesthetic only).

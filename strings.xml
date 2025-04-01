@@ -5,6 +5,6 @@
 -->
 <root>
 	<!-- Options -->
-	<string name="option_header_size_matters">Size Matters (GM)</string>
+	<string name="option_header_size_matters">Go Big or Go Gnome (GM)</string>
 	<string name="option_label_sm_small_size">Make small creature tokens slightly smaller than medium. (aesthetic change only)</string>
 </root>
