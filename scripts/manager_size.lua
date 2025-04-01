@@ -238,7 +238,7 @@ function calculateSpace(nodeCombatant, bForceRedraw)
 		end
 		if nSpace == 3.75 then
 			local tokenCT = CombatManager.getTokenFromCT(nodeCombatant);
-			tokenCT.setScale(0.6);
+			if tokenCT then tokenCT.setScale(0.6) end
 		end
 		return true;
 	end
@@ -252,8 +252,18 @@ function calculateReach(nodeCombatant)
 
 	local aReachEffects = EffectManager.getEffectsByType(nodeCombatant, "REACH");
 	for _,rEffect in ipairs(aReachEffects) do
-		if rEffect.mod ~= 0 then
+		if rEffect['mod'] ~= 0 then
 			nReach = rEffect.mod;
+		elseif not rEffect['dice'][1] then
+			for _,sRemainder in ipairs(rEffect['remainder']) do
+				if string.lower(sRemainder) == 'none' then
+					nReach = 0;
+					break;
+				end
+			end
+			if nReach ~= 0 and string.match(string.lower(rEffect['original']), '^reach:%s*0$') then
+				nReach = 0;
+			end
 		end
 	end
 

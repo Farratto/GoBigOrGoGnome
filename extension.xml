@@ -4,13 +4,13 @@
   attribution and copyright information.
 -->
 <root release="3.0" version="3">
+	<announcement text="Go Big or Go Gnome ~dev_version~ by MeAndUnique and maintained by Farratto." icon="SizeMatter_icon" font="emotefont" />
 	<properties>
 		<name>Feature: Go Big or Go Gnome</name>
 		<version>~dev_version~</version>
 		<author>MeAndUnique</author>
 		<description>Adds support for effects that change creature size, space, and reach.</description>
 	</properties>
-
 	<base>
 		<script name="ActorCommonManagerSM" file="scripts/manager_actor_common_sm.lua" />
 		<script name="EncumbranceManagerSM" file="scripts/manager_encumbrance_sm.lua" />
@@ -23,7 +23,15 @@
 		<includefile source="campaign/record_creature.xml" />
 
 		<icon name="SizeMatter_icon" file="GoBigOrGoGnome.webp" />
-	</base>
 
-	<announcement text="Go Big or Go Gnome ~dev_version~ by MeAndUnique and maintained by Farratto." icon="SizeMatter_icon" font="emotefont" />
+		<script name="PowerUpGBoGG">
+			function onInit()
+				if PowerUp then
+					PowerUp.registerExtension("Go Big or Go Gnome", "~dev_version~", {
+						['message'] = "~dev_version~: ~update_notes~"
+					});
+				end
+			end
+		</script>
+	</base>
 </root>

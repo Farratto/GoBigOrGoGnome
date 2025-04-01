@@ -10,7 +10,7 @@ Go Big or Go Gnome is a rebranding of Size Matters by MeAndUnique, now maintaine
 It is recommended that you disable and hide Size Matters on your Forge account.  And if you have downloaded any releases from github, you should also delete any copies of SizeMatters.ext in your extensions folder. \
 Install from the [Fantasy Grounds Forge](https://forge.fantasygrounds.com/shop/items/2170/view). \
 You can find the source code at Farratto's [GitHub](https://github.com/Farratto/GoBigOrGoGnome). \
-You can ask questions at the [Fantasy Grounds Forum](https://www.fantasygrounds.com/forums). \
+You can ask questions at the [Fantasy Grounds Forum](https://www.fantasygrounds.com/forums/showthread.php?84666).
 
 ### Details
 
@@ -22,7 +22,7 @@ The following effects have been added:
 * **SIZE: size** - Makes the bearer the given size. The allowed values for size are determined by the ruleset (for any ruleset that uses "DataCommon.creaturesize").
 * **SPACE: n** - Sets the bearer's space to n, using the ruleset's unit of distance.
 * **ADDSPACE: n** - Adds n to the bearer's reach, using the ruleset's unit of distance.
-* **REACH: n** - Sets the bearer's reach to n, using the ruleset's unit of distance.
+* **REACH: n** - Sets the bearer's reach to n, using the ruleset's unit of distance. (use none for 0)
 * **ADDREACH: n** - Adds n to the bearer's reach, using the ruleset's unit of distance.
 
 ## Attribution
@@ -34,4 +34,5 @@ SmiteWorks owns rights to code sections copied from their rulesets by permission
 
 ### Change Log
 
-* 1.2.0: REBRANDING of Size Matters. FEATURE: hold ctrl and mouse-wheel up/down to rapidly change size-category of creatures. FIXED: not setting token size correctly for creatures smaller than 1 grid square. FIXED: when adding new token to map that has a size change, that size change was not respected. NEW option to make small creture tokens slightly smaller than medium (aesthetic only).
+* v1.2.1: FIX: nil error. Now allows setting reach to none
+* v1.2.0: REBRANDING of Size Matters. FEATURE: hold ctrl and mouse-wheel up/down to rapidly change size-category of creatures. FIXED: not setting token size correctly for creatures smaller than 1 grid square. FIXED: when adding new token to map that has a size change, that size change was not respected. NEW option to make small creture tokens slightly smaller than medium (aesthetic only).
