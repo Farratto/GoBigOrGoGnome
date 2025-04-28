@@ -8,6 +8,7 @@
 --luacheck: globals onCurrentReachChanged onCurrentDeleted onChildDeleted onCombatantEffectUpdated
 --luacheck: globals calculateSize calculateSpace calculateReach getSizeName getSpaceFromSize
 --luacheck: globals swapSpaceReach resetSpaceReach swapSize resetSize incrementSize forceRedraw
+--luacheck: globals fgetSpaceReachFromActorSize5E getSpaceReachFromActorSize5ESDM
 
 local getValueOriginal;
 
@@ -21,6 +22,8 @@ local sDeleted;
 function onInit()
 	getValueOriginal = DB.getValue;
 	DB.getValue = getDBValue;
+	fgetSpaceReachFromActorSize5E = ActorCommonManager.getSpaceReachFromActorSize5E;
+	ActorCommonManager.getSpaceReachFromActorSize5E = getSpaceReachFromActorSize5ESDM;
 
 	if Session.IsHost then
 		DB.addHandler(CombatManager.CT_COMBATANT_PATH .. ".currentsize", "onUpdate", onCurrentSizeChanged);
@@ -34,6 +37,23 @@ function onInit()
 		OptionsManager.registerOptionData({ sKey = 'sm_small_size', sGroupRes = 'option_header_size_matters'
 			, tCustom = { default = "on" }
 		});
+	end
+
+	if Session.RulesetName == '5E' then
+		if not DataCommon.creaturesize['c'] then
+			DataCommon.creaturesize['c'] = 4;
+			DataCommon.creaturesize['colossal'] = 4;
+		end
+		DataCommon.creaturesize['i'] = 5;
+		DataCommon.creaturesize['giga'] = 5;
+		DataCommon.creaturesize['n'] = 6;
+		DataCommon.creaturesize['enormous'] = 6;
+		DataCommon.creaturesize['e'] = 7;
+		DataCommon.creaturesize['epic'] = 7;
+		DataCommon.creaturesize['o'] = 8;
+		DataCommon.creaturesize['monumental'] = 8;
+		DataCommon.creaturesize['k'] = 9;
+		DataCommon.creaturesize['cosmic'] = 9;
 	end
 end
 
@@ -313,11 +333,12 @@ function getSpaceFromSize(nSize, nDU)
 		return nReturn * nDU;
 	end
 ]]
-	--not RAW but seems cool.  I'll make an option if anyone complains.
-	--if Session.RulesetName == '5E' and OptionsManager.isOption('sm_small_size', 'on') and nSize == -1 then
-	if Session.RulesetName == '5E' and OptionsManager.isOption('sm_small_size', 'on') and nSize == -1 then
-		if not nDU then nDU = GameSystem.getDistanceUnitsPerGrid() end
-		return nDU * 0.75;
+	if Session.RulesetName == '5E' then
+		if OptionsManager.isOption('sm_small_size', 'on') and nSize == -1 then
+			if not nDU then nDU = GameSystem.getDistanceUnitsPerGrid() end
+			return nDU * 0.75;
+		end
+		return getSpaceReachFromActorSize5ESDM(nSize);
 	end
 
 	return ActorCommonManager.getSpaceReachFromActorSize(nSize, Session.RulesetName);
@@ -372,4 +393,29 @@ function forceRedraw(nodeW)
 		local nodeCT = ActorManager.getCTNode(nodeW);
 		if nodeCT then SizeManager.onCombatantEffectUpdated(DB.getChild(nodeCT, 'effects'), true) end
 	end
+end
+
+-- From 5E SRD: Tiny (-2), Small (-1), Medium (0), Large (1), Huge (2), Gargantuan (3)
+function getSpaceReachFromActorSize5ESDM(nActorSize)
+	local nSpace = GameSystem.getDistanceUnitsPerGrid();
+	local nReach = nSpace;
+	-- Medium (0) and Small (-1) just return 1 unit each
+
+	if nActorSize < 4 then
+		return fgetSpaceReachFromActorSize5E(nActorSize);
+	elseif nActorSize == 4 then --colossal (c)
+		nSpace = nSpace * 5;
+	elseif nActorSize == 5 then --giga (i)
+		nSpace = nSpace * 6;
+	elseif nActorSize == 6 then --enormous (n)
+		nSpace = nSpace * 8;
+	elseif nActorSize == 7 then --epic (e)
+		nSpace = nSpace * 10;
+	elseif nActorSize == 8 then --monumental (o)
+		nSpace = nSpace * 16;
+	elseif nActorSize > 8 then --cosmic (k)
+		nSpace = nSpace * 20;
+	end
+
+	return nSpace, nReach;
 end

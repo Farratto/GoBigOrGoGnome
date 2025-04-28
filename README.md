@@ -1,5 +1,5 @@
 ## Go Big or Go Gnome
-**Current Version**: ~dev_version~ \
+**Current Version**: ~v-dev~ \
 **Updated**: ~date~
 
 Adds support for effects that change creature size, space, and reach.
@@ -25,6 +25,14 @@ The following effects have been added:
 * **REACH: n** - Sets the bearer's reach to n, using the ruleset's unit of distance. (use none for 0)
 * **ADDREACH: n** - Adds n to the bearer's reach, using the ruleset's unit of distance.
 
+New size cateogries added to the 5E ruleset (let me know if you want additional sizes for other rulesets).
+* colossal (c) (5x5)
+* giga (i) (6x6)
+* enormous (n) (8x8)
+* epic (e) (10x10)
+* monumental (o) (16x16)
+* cosmic (k) (20x20)
+
 ## Attribution
 MeAndUnique is the original author of Size Matters.  Go Big or Go Gnome is a fork that is maintained by Farratto, under the MIT license. \
 Icon made by Cathelineau from [Game-icons.net](https://game-icons.net/1x1/cathelineau/bad-gnome.html). \
@@ -34,6 +42,7 @@ SmiteWorks owns rights to code sections copied from their rulesets by permission
 
 ### Change Log
 
+* v1.3.0: FEATURE: new size categories of colossal (5x5), giga (6x6), enormous (8x8), epic (10x10), monumental (16x16), cosmic (20x20) for 5E ruleset
 * v1.2.2: FIXED: typo
 * v1.2.1: FIX: nil error. Now allows setting reach to none
 * v1.2.0: REBRANDING of Size Matters. FEATURE: hold ctrl and mouse-wheel up/down to rapidly change size-category of creatures. FIXED: not setting token size correctly for creatures smaller than 1 grid square. FIXED: when adding new token to map that has a size change, that size change was not respected. NEW option to make small creture tokens slightly smaller than medium (aesthetic only).
