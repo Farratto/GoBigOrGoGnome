@@ -2,9 +2,13 @@
 -- attribution and copyright information.
 
 --luacheck: globals updateSizeHelper getTokenSpace onSpaceChanged onReachChanged onTokenRefUpdated
+--luacheck: globals updateHealthHelperSM updateHealthBarScaleSM updateNameHelperSM
 
 local updateSizeHelperOriginal;
 local getTokenSpaceOriginal;
+local fupdateHealthHelper;
+local fupdateHealthBarScale;
+local fupdateNameHelper;
 
 function onInit()
 	updateSizeHelperOriginal = TokenManager.updateSizeHelper;
@@ -12,6 +16,13 @@ function onInit()
 
 	getTokenSpaceOriginal = TokenManager.getTokenSpace;
 	TokenManager.getTokenSpace = getTokenSpace;
+
+	fupdateHealthHelper = TokenManager.updateHealthHelper;
+	TokenManager.updateHealthHelper = updateHealthHelperSM;
+	fupdateHealthBarScale = TokenManager.updateHealthBarScale;
+	TokenManager.updateHealthBarScale = updateHealthBarScaleSM;
+	fupdateNameHelper = TokenManager.updateNameHelper;
+	TokenManager.updateNameHelper = updateNameHelperSM;
 
 	if Session.IsHost then
 		SizeManager.addSpaceChangedHandler(onSpaceChanged);
@@ -56,4 +67,24 @@ function onTokenRefUpdated(nodeUpdated)
 	local tokenCT = CombatManager.getTokenFromCT(nodeCT);
 	if not tokenCT then return end
 	SizeManager.onCombatantEffectUpdated(DB.getChild(nodeCT, 'effects'), true);
+end
+
+function updateNameHelperSM(...)
+	SizeManager.swapSpaceReach();
+	local vReturn = fupdateNameHelper(...);
+	SizeManager.resetSpaceReach();
+	return vReturn;
+end
+
+function updateHealthHelperSM(...)
+	SizeManager.swapSpaceReach();
+	local vReturn = fupdateHealthHelper(...);
+	SizeManager.resetSpaceReach();
+	return vReturn;
+end
+function updateHealthBarScaleSM(...)
+	SizeManager.swapSpaceReach();
+	local vReturn = fupdateHealthBarScale(...);
+	SizeManager.resetSpaceReach();
+	return vReturn;
 end

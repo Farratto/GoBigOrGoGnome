@@ -4,7 +4,7 @@
   attribution and copyright information.
 -->
 <root release="3.0" version="3">
-	<announcement text="Go Big or Go Gnome ~v1.3.0-dev~ by MeAndUnique and maintained by Farratto." icon="SizeMatter_icon" font="emotefont" />
+	<announcement text="Go Big or Go Gnome ~v1.3.1-dev~ by MeAndUnique and maintained by Farratto." icon="SizeMatter_icon" font="emotefont" />
 	<properties>
 		<name>Feature: Go Big or Go Gnome</name>
 		<version>~v-dev~</version>

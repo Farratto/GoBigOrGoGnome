@@ -42,6 +42,7 @@ SmiteWorks owns rights to code sections copied from their rulesets by permission
 
 ### Change Log
 
+* v1.3.1: FIXED: some widgets were not using modified sizes
 * v1.3.0: FEATURE: new size categories of colossal (5x5), giga (6x6), enormous (8x8), epic (10x10), monumental (16x16), cosmic (20x20) for 5E ruleset
 * v1.2.2: FIXED: typo
 * v1.2.1: FIX: nil error. Now allows setting reach to none
