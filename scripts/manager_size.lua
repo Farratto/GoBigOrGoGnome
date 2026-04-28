@@ -57,7 +57,7 @@ function onInit()
 	end
 end
 
-function getDBValue(vFirst, vSecond, ...)
+function getDBValue(vFirst, vSecond, vThird, ...)
 	if bShouldSwap then
 		if vSecond == "size" then
 			local nodeCT = ActorManager.getCTNode(vFirst)
@@ -79,8 +79,29 @@ function getDBValue(vFirst, vSecond, ...)
 			end
 		end
 	end
+
+	local sType = type(vFirst);
+	if sType == 'undefined' then
+Debug.console("vFirst.1 = "..tostring(vFirst)..". vSecond = "..tostring(vSecond)..". vThird = "..tostring(vThird));
+Debug.console("firstType = "..sType..". secondType = "..type(vSecond)..". thirdType = "..type(vThird));
+		return vThird;
+	end
+	if sType ~= 'databasenode' then
+		if sType ~= 'string' then
+Debug.console("vFirst.2 = "..tostring(vFirst)..". vSecond = "..tostring(vSecond)..". vThird = "..tostring(vThird));
+Debug.console("firstType = "..sType..". secondType = "..type(vSecond)..". thirdType = "..type(vThird));
+			return vThird;
+		end
+--[[		if not DB.findNode(vFirst) and not string.match(vFirst, '^options%.') then
+Debug.console("findNode = "..tostring(DB.findNode(vFirst))..".");
+Debug.console("vFirst.3 = "..tostring(vFirst)..". vSecond = "..tostring(vSecond)..". vThird = "..tostring(vThird));
+Debug.console("firstType = "..sType..". secondType = "..type(vSecond)..". thirdType = "..type(vThird));
+			return vSecond;
+		end]]
+	end
+
 	if vSecond then
-		return getValueOriginal(vFirst, vSecond, ...);
+		return getValueOriginal(vFirst, vSecond, vThird, ...);
 	else
 		return getValueOriginal(vFirst);
 	end
