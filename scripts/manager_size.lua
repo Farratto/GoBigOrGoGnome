@@ -76,14 +76,14 @@ function onInit()
 end
 
 function getDBValue(vFirst, vSecond, ...)
-	--[[local sType = type(vFirst);
+	local sType = type(vFirst);
 	if sType == 'undefined' then return ... end
 	if sType ~= 'databasenode' then
 		if sType ~= 'string' then return ... end
 		if not DB.findNode(vFirst) and not string.match(vFirst, '^options%.') then
-			return vSecond;
+			return vSecond, ...;
 		end
-	end]]
+	end
 
 	if bShouldSwap then
 		if vSecond == 'size' then
