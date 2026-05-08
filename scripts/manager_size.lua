@@ -11,7 +11,7 @@
 --luacheck: globals fgetSpaceReachFromActorSize5E getSpaceReachFromActorSize5ESDM
 --luacheck: globals fgetSpaceReachFromActorSize4E getSpaceReachFromActorSize4ESDM
 --luacheck: globals fgetSpaceReachFromActorSizeD20 getSpaceReachFromActorSizeD20SDM
---luacheck: globals getSpaceReachFromActorSizeCustom
+--luacheck: globals getSpaceReachFromActorSizeCustom getRSSizeType
 --luacheck: globals fupdateHealthHelper updateHealthHelperSDM
 --luacheck: globals handleSlashList handleSlashAdd handleSlashRemove printSlashSyntax isSize removeCustomSize
 --luacheck: globals GBOGG_PATH CUSTOM_SIZE_KEY SIZE_PATH
@@ -21,7 +21,7 @@ GBOGG_PATH = 'GoBigOrGoGnome';
 CUSTOM_SIZE_KEY = 'customsizes';
 SIZE_PATH = GBOGG_PATH..'.'..CUSTOM_SIZE_KEY;
 OOB_MSGTYPE_SIZETYPECHANGE = 'size_type_change'
-local getValueOriginal, bShouldSwap, sDeleted;
+local getValueOriginal, bShouldSwap, sDeleted, sRSSizeType;
 local tSizeChangedHandlers = {};
 local tSpaceChangedHandlers = {};
 local tReachChangedHandlers = {};
@@ -44,6 +44,8 @@ function onInit()
 
 	OOBManager.registerOOBMsgHandler(OOB_MSGTYPE_SIZETYPECHANGE, handleSizeTypeChange);
 
+	sRSSizeType = getRSSizeType();
+
 	if Session.IsHost then
 		DB.addHandler(CombatManager.CT_COMBATANT_PATH .. '.currentsize', 'onUpdate', onCurrentSizeChanged);
 		DB.addHandler(CombatManager.CT_COMBATANT_PATH .. '.currentspace', 'onUpdate', onCurrentSpaceChanged);
@@ -57,7 +59,7 @@ function onInit()
 			, tCustom = { default = 'on' }
 		});
 		-- From 3.5E: Colossal (c) (4) (nSpace*6) (nReach*4)
-		if Session.RulesetName == '5E' or Session.RulesetName == '4E' then
+		if sRSSizeType == '5E' or sRSSizeType == '4E' then
 			DataCommon.creaturesize['c'] = 4;
 			DataCommon.creaturesize['colossal'] = 4;
 		end
@@ -258,7 +260,7 @@ function calculateSpace(nodeCombatant, bForceRedraw)
 
 	local nSize = calculateSize(nodeCombatant);
 	if nSize then
-		local nSizeSpace = ActorCommonManager.getSpaceReachFromActorSize(nSize, Session.RulesetName)
+		local nSizeSpace = ActorCommonManager.getSpaceReachFromActorSize(nSize, sRSSizeType)
 		if nSizeSpace then
 			nSpace = nSizeSpace;
 		end
@@ -574,7 +576,7 @@ function handleSlashAdd(_, sParams)
 	local tMsg = {};
 	tMsg['secret'] = true
 	if isSize(sName) then
-		tMsg['text'] = "That size name already exists.	If you want to change a custom size, remove it and then re-add it.	You cannot change ruleset sizes with this extension.";
+		tMsg['text'] = "That size name already exists.	If you want to change a custom size, remove it and then re-add it.	You cannot change ruleset sizes with this extension."; --luacheck: ignore 631
 		Comm.addChatMessage(tMsg);
 		return false;
 	end
@@ -583,7 +585,7 @@ function handleSlashAdd(_, sParams)
 	if not sSpace then return printSlashSyntax('add') end
 	local nSpace = tonumber(sSpace);
 	if isSize(nil, nSpace) then
-		tMsg['text'] = "That size number already exists.  If you want to change a custom size, remove it and then re-add it.  You cannot change ruleset sizes with this extension.";
+		tMsg['text'] = "That size number already exists.  If you want to change a custom size, remove it and then re-add it.  You cannot change ruleset sizes with this extension."; --luacheck: ignore 631
 		Comm.addChatMessage(tMsg);
 		return false;
 	end
@@ -881,7 +883,7 @@ function storeRulesetSizes()
 			end
 		else
 			tRulesetSizes[nIndex] = {};
-			nSpace, nReach = ActorCommonManager.getSpaceReachFromActorSize(nIndex, Session.RulesetName);
+			nSpace, nReach = ActorCommonManager.getSpaceReachFromActorSize(nIndex, sRSSizeType);
 			nSpace = nSpace / nDU;
 			nReach = nReach / nDU;
 			if bBrev then
@@ -934,4 +936,11 @@ function spairs(t, order)
 			return keys[i], t[keys[i]];
 		end
 	end
+end
+
+function getRSSizeType()
+	local sRS = Session.RulesetName;
+	if sRS == '5E' then return '5E' end
+	if sRS == '4E' then return '4E' end
+	return 'D20';
 end

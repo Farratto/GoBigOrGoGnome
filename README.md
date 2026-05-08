@@ -57,6 +57,7 @@ SmiteWorks owns rights to code sections copied from their rulesets by permission
 
 ### Change Log
 
+* v1.4.1: FIXED: error in application of new size-system to some rulesets.
 * v1.4.0: Cosmetic small size option now available to all rulesets. Colossus size added to 4E ruleset. FIXED: Colossus size was erroneously set to 5x5. Now corrected to 6x6. Dot health indicator was not resizing with size changes. Effect tag SIZE: # was adding/removing one grid space instead adding/removing one size category. FEATURE: slash commands to add custom large sizes. Removed previously built-in custom sizes for 5E (other than colossus). Accomodations for ruleset 2026-04-28
 * v1.3.3: Compatibility update for 2026-05 Ruleset Update
 * v1.3.2: Compatibility update for FG v4.8.0
