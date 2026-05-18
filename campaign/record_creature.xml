@@ -4,7 +4,7 @@
   attribution and copyright information.
 -->
 <root>
-	<windowclass name="charsheet_notes" merge="join">
+	<windowclass name="charsheet_notes" merge="join" ruleset="PFRPG2|3.5E">
 		<sheetdata>
 			<string_labeled name="size">
 				<script>
@@ -51,6 +51,29 @@
 		</sheetdata>
 	</windowclass>
 	<windowclass name="charsheet_notes" merge="join" ruleset="4E">
+		<sheetdata>
+			<stringu name="size">
+				<script>
+					function onWheel(notches)
+						if not Input.isControlPressed() or isReadOnly() then return false end
+
+						local sCurrent = getValue();
+						local sSizeNew = SizeManager.incrementSize(sCurrent, notches);
+						if sSizeNew then
+							if sSizeNew ~= sCurrent then
+								setValue(sSizeNew);
+								SizeManager.forceRedraw(window.getDatabaseNode());
+							end
+							return true;
+						else
+							return sSizeNew;
+						end
+					end
+				</script>
+			</stringu>
+		</sheetdata>
+	</windowclass>
+	<windowclass name="charsheet_notes_contents" merge="join" ruleset="2E|CosmereRPG">
 		<sheetdata>
 			<stringu name="size">
 				<script>
@@ -165,6 +188,102 @@
 					end
 				</script>
 			</string_columnh>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="npc_combat_creature" merge="join" ruleset="3.5E">
+		<sheetdata>
+			<string_columnh name="size">
+				<script>
+					function onWheel(notches)
+						if not Input.isControlPressed() or isReadOnly() then return false end
+
+						local sCurrent = getValue();
+						local sSizeNew = SizeManager.incrementSize(sCurrent, notches);
+						if sSizeNew then
+							if sSizeNew ~= sCurrent then
+								setValue(sSizeNew);
+								SizeManager.forceRedraw(window.getDatabaseNode());
+							end
+							return true;
+						else
+							return sSizeNew;
+						end
+					end
+				</script>
+			</string_columnh>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="npc_combat_vehicle" merge="join" ruleset="4E">
+		<sheetdata>
+			<string_npc name="size">
+				<script>
+					function onWheel(notches)
+						if not Input.isControlPressed() or isReadOnly() then return false end
+
+						local sCurrent = getValue();
+						local sSizeNew = SizeManager.incrementSize(sCurrent, notches);
+						if sSizeNew then
+							if sSizeNew ~= sCurrent then
+								setValue(sSizeNew);
+								SizeManager.forceRedraw(window.getDatabaseNode());
+							end
+							return true;
+						else
+							return sSizeNew;
+						end
+					end
+				</script>
+			</string_npc>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="npc_combat" merge="join" ruleset="2E">
+		<sheetdata>
+			<string_columnh name="size">
+				<script>
+					function onWheel(notches)
+						if not Input.isControlPressed() or isReadOnly() then return false end
+
+						local sCurrent = getValue();
+						local sSizeNew = SizeManager.incrementSize(sCurrent, notches);
+						if sSizeNew then
+							if sSizeNew ~= sCurrent then
+								setValue(sSizeNew);
+								SizeManager.forceRedraw(window.getDatabaseNode());
+							end
+							return true;
+						else
+							return sSizeNew;
+						end
+					end
+				</script>
+			</string_columnh>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="npc_main_summary" merge="join" ruleset="CosmereRPG">
+		<sheetdata>
+			<string_content_columnh name="size">
+				<script>
+					function onWheel(notches)
+						if not Input.isControlPressed() or isReadOnly() then return false end
+
+						local sCurrent = getValue();
+						local sSizeNew = SizeManager.incrementSize(sCurrent, notches);
+						if sSizeNew then
+							if sSizeNew ~= sCurrent then
+								setValue(sSizeNew);
+								SizeManager.forceRedraw(window.getDatabaseNode());
+							end
+							return true;
+						else
+							return sSizeNew;
+						end
+					end
+				</script>
+			</string_content_columnh>
 		</sheetdata>
 	</windowclass>
 </root>
