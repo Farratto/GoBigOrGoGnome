@@ -3,20 +3,14 @@
 
 --luacheck: globals updateSizeHelper getTokenSpace onSpaceChanged onReachChanged onTokenRefUpdated
 --luacheck: globals updateHealthHelperSM updateHealthBarScaleSM updateNameHelperSM
-
-local updateSizeHelperOriginal;
-local getTokenSpaceOriginal;
-local fupdateHealthHelper;
-local fupdateHealthBarScale;
-local fupdateNameHelper;
+--luacheck: globals updateSizeHelperOriginal getTokenSpaceOriginal
+--luacheck: globals fupdateHealthHelper fupdateHealthBarScale fupdateNameHelper
 
 function onInit()
 	updateSizeHelperOriginal = TokenManager.updateSizeHelper;
 	TokenManager.updateSizeHelper = updateSizeHelper;
-
 	getTokenSpaceOriginal = TokenManager.getTokenSpace;
 	TokenManager.getTokenSpace = getTokenSpace;
-
 	fupdateHealthHelper = TokenManager.updateHealthHelper;
 	TokenManager.updateHealthHelper = updateHealthHelperSM;
 	fupdateHealthBarScale = TokenManager.updateHealthBarScale;
@@ -31,15 +25,16 @@ function onInit()
 	end
 end
 
-function updateSizeHelper(tokenCT, nodeCT)
+function updateSizeHelper(tokenCT, nodeCT, ...)
 	SizeManager.swapSpaceReach();
-	updateSizeHelperOriginal(tokenCT, nodeCT);
+	local vReturn = updateSizeHelperOriginal(tokenCT, nodeCT, ...);
 	SizeManager.resetSpaceReach();
+	return vReturn;
 end
 
-function getTokenSpace(tokenMap)
+function getTokenSpace(tokenMap, ...)
 	SizeManager.swapSpaceReach();
-	local nSpace = getTokenSpaceOriginal(tokenMap);
+	local nSpace = getTokenSpaceOriginal(tokenMap, ...);
 	SizeManager.resetSpaceReach();
 	return nSpace;
 end
@@ -76,10 +71,37 @@ function updateNameHelperSM(...)
 	return vReturn;
 end
 
-function updateHealthHelperSM(...)
+function updateHealthHelperSM(tokenCT, nodeCT, ...)
 	SizeManager.swapSpaceReach();
-	local vReturn = fupdateHealthHelper(...);
+
+	local sOptTH;
+	if Session.IsHost then
+		sOptTH = OptionsManager.getOption("TGMH");
+	elseif CombatManager.getFactionFromCT(nodeCT) == "friend" then
+		sOptTH = OptionsManager.getOption("TPCH");
+	else
+		sOptTH = OptionsManager.getOption("TNPCH");
+	end
+
+	if sOptTH == "bar" or sOptTH == "barhover" then
+		tokenCT.deleteWidget("healthdot");
+		local nSpace = TokenManager.calcTokenSpace(DB.getValue(nodeCT, "space"));
+		local tWidget = {
+			name = "healthdot",
+			icon = "healthdot",
+			position = "bottomright",
+			x = TokenManager.TOKEN_HEALTHDOT_HOFFSET,
+			y = TokenManager.TOKEN_HEALTHDOT_VOFFSET,
+			w = TokenManager.TOKEN_HEALTHDOT_SIZE * nSpace,
+			h = TokenManager.TOKEN_HEALTHDOT_SIZE * nSpace,
+		};
+		tokenCT.addBitmapWidget(tWidget);
+	end
+
+	local vReturn = fupdateHealthHelper(tokenCT, nodeCT, ...);
+
 	SizeManager.resetSpaceReach();
+
 	return vReturn;
 end
 function updateHealthBarScaleSM(...)

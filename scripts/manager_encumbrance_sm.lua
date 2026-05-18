@@ -21,13 +21,6 @@ function getEncumbranceMult(nodeChar)
 	return result;
 end
 
---[[function onSizeChanged(nodeCombatant)
-	local sType,nodeChar = ActorManager.getTypeAndNode(nodeCombatant);
-	-- ItemPowerManager is provided by Kit'N'Kaboodle, if present NPCs have inventories as well.
-	if (sType == "pc") or ItemPowerManager then
-		CharEncumbranceManager5E.updateEncumbranceLimit(nodeChar)
-	end
-end]]
 function onSizeChanged(nodeCombatant)
 	local rActor = ActorManager.resolveActor(nodeCombatant);
 	if rActor then
