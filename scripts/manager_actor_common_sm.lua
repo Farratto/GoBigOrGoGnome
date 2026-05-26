@@ -330,7 +330,7 @@ function handleSlashList()
 	end
 end
 function handleSlashAdd(_, sParams)
-	if sParams or "" == "" then return printSlashSyntax('add') end
+	if not sParams or sParams == "" then return printSlashSyntax('add') end
 
 	local sName = string.match(string.lower(sParams), '^%a+');
 	if not sName then return printSlashSyntax('add') end
@@ -421,7 +421,9 @@ function handleSlashAdd(_, sParams)
 	end
 end
 function handleSlashRemove(_, sParams)
-	if sParams or "" == "" then return printSlashSyntax('remove') end
+	if not sParams or sParams == "" then
+		return printSlashSyntax('remove');
+	end
 
 	local sParams = StringManager.trim(string.lower(sParams));
 	local nSpace = tonumber(sParams);

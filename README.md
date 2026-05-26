@@ -57,6 +57,7 @@ SmiteWorks owns rights to code sections copied from their rulesets by permission
 
 ### Change Log
 
+* v1.5.2: FIXED: Slash commands were not working.
 * v1.5.1: FIXED: Errors introduced with last update. Apologies. Expanded other ruleset support.
 * v1.5.0: FIXED: PFRPG2 ruleset ignoring base size on PCs. Added Ctrl-MouseWheel speed size adjustments and slash commands to some other rulesets. Added protections for erroneous syntax in slash commands.
 * v1.4.2: FIXED: rare error report misrepresentation.
