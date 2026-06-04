@@ -4,23 +4,15 @@
   attribution and copyright information.
 -->
 <root release="3.0" version="3">
-	<announcement text="Go Big or Go Gnome ~v1.5.2-dev~ by MeAndUnique and maintained by Farratto." icon="SizeMatter_icon" font="emotefont" />
+	<announcement text="Go Big or Go Gnome ~v1.6.0-dev~ by Farratto." icon="SizeMatter_icon" font="emotefont" />
 	<properties>
 		<name>Feature: Go Big or Go Gnome</name>
 		<version>~v-dev~</version>
-		<author>MeAndUnique</author>
+		<author>Farratto</author>
 		<description>Adds support for effects that change creature size, space, and reach.</description>
 	</properties>
 	<base>
-		<script name="ActorCommonManagerSM" file="scripts/manager_actor_common_sm.lua" />
-		<script name="EncumbranceManagerSM" file="scripts/manager_encumbrance_sm.lua" />
-		<script name="SizeManager" file="scripts/manager_size.lua" />
-		<script name="TokenManagerSM" file="scripts/manager_token_sm.lua" />
-
-		<includefile source="strings.xml" />
-		<includefile source="ct/ct_client.xml" />
-		<includefile source="ct/ct_host.xml" />
-		<includefile source="campaign/record_creature.xml" />
+		<script name="ActorCommonManagerSM" file="manager_actor_common_sm.lua" />
 
 		<icon name="SizeMatter_icon" file="GoBigOrGoGnome.webp" />
 
